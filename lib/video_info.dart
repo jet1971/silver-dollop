@@ -79,7 +79,7 @@ class _VideoInfoState extends State<VideoInfo> {
                           color: color.AppColor.secondPageIconColor,),
                           SizedBox(width: 5,),
                           Text(
-                            "68 minss",
+                            "68 min",
                             style: TextStyle(
                               fontSize: 16,
                               color:color.AppColor.secondPageIconColor
