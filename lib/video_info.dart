@@ -13,12 +13,12 @@ class VideoInfo extends StatefulWidget {
 }
 
 class _VideoInfoState extends State<VideoInfo> {
-  List info = [];
-  initData() {
-    DefaultAssetBundle.of(context)
+  List videoInfo = [];
+  initData() async {
+    await DefaultAssetBundle.of(context)
         .loadString("json/videoinfo.json")
         .then((value) {
-      info = json.decode(value);
+      videoInfo = json.decode(value);
     });
   }
 
@@ -192,6 +192,39 @@ class _VideoInfoState extends State<VideoInfo> {
                       width: 20,
                     ),
                   ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: videoInfo.length,
+                      itemBuilder: (_, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            debugPrint(index.toString());
+                          },
+                          child: Container(
+                            height: 135,
+                            color: Colors.redAccent,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 80,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                              image: AssetImage(videoInfo[index]
+                                                  ["thumbnail"]))),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                 )
               ],
             ),
