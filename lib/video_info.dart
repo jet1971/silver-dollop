@@ -14,6 +14,7 @@ class VideoInfo extends StatefulWidget {
 
 class _VideoInfoState extends State<VideoInfo> {
   List videoInfo = [];
+  bool _playArea = false;
   initData() async {
     await DefaultAssetBundle.of(context)
         .loadString("json/videoinfo.json")
@@ -34,7 +35,7 @@ class _VideoInfoState extends State<VideoInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      decoration: BoxDecoration(
+      decoration: _playArea==false? BoxDecoration(
           gradient: LinearGradient(
         colors: [
           color.AppColor.gradientFirst.withOpacity(0.9),
@@ -42,10 +43,12 @@ class _VideoInfoState extends State<VideoInfo> {
         ],
         begin: const FractionalOffset(0.0, 0.4),
         end: Alignment.topRight,
-      )),
+      )):BoxDecoration(
+        color: color.AppColor.gradientSecond,
+      ),
       child: Column(
         children: [
-          Container(
+    _playArea==false? Container(
             padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
             width: MediaQuery.of(context).size.width,
             height: 280,
@@ -150,7 +153,33 @@ class _VideoInfoState extends State<VideoInfo> {
                 )
               ],
             ),
-          ),
+          ):Container(
+      child: Column(
+        children: [
+          Container(
+            height: 100,
+            padding: const EdgeInsets.only(top:50, left:30, right: 30),
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: (){
+                    debugPrint("tapped");
+                  },
+                  child: Icon(Icons.arrow_back_ios,
+                  size: 20,
+                  color:color.AppColor.secondPageIconColor)
+
+                ),
+                Expanded(child: Container()),
+                Icon(Icons.info_outline,
+                size: 20,
+                    color:color.AppColor.secondPageIconColor)
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
           Expanded(
               child: Container(
             decoration: BoxDecoration(
@@ -215,6 +244,11 @@ class _VideoInfoState extends State<VideoInfo> {
           return GestureDetector(
             onTap: () {
               debugPrint(index.toString());
+              setState(() {
+                if(_playArea==false){
+                  _playArea=true;
+                }
+              });
             },
             child: _buildCard(index),
           );
@@ -281,7 +315,7 @@ class _VideoInfoState extends State<VideoInfo> {
                   )),
               Row(
                 children: [
-                  for (int i = 0; i < 70; i++)
+                  for (int i = 0; i < 80; i++)
                     i.isEven
                         ? Container(
                             width: 3,
