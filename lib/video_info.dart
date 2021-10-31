@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
 import 'colors.dart' as color;
 
 class VideoInfo extends StatefulWidget {
@@ -15,6 +16,7 @@ class VideoInfo extends StatefulWidget {
 class _VideoInfoState extends State<VideoInfo> {
   List videoInfo = [];
   bool _playArea = false;
+  late VideoPlayerController _controller;
   initData() async {
     await DefaultAssetBundle.of(context)
         .loadString("json/videoinfo.json")
@@ -59,6 +61,7 @@ class _VideoInfoState extends State<VideoInfo> {
                   children: [
                     InkWell(
                       onTap: () {
+                        debugPrint("tapped");
                         Get.back();
                       },
                       child: Icon(Icons.arrow_back_ios,
@@ -176,7 +179,8 @@ class _VideoInfoState extends State<VideoInfo> {
                     color:color.AppColor.secondPageIconColor)
               ],
             ),
-          )
+          ),
+          _playView(context),
         ],
       ),
     ),
@@ -236,6 +240,19 @@ class _VideoInfoState extends State<VideoInfo> {
     ));
   }
 
+  _onTapVideo(int index) {
+    final controller = VideoPlayerController.network(videoInfo[index]["videoUrl"]);
+    _controller = controller;
+    setState(() {});
+    controller..initialize().then((_) {
+        controller.play();
+        setState(() {
+
+        });
+      });
+  }
+
+
   _listView() {
     return ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
@@ -243,6 +260,7 @@ class _VideoInfoState extends State<VideoInfo> {
         itemBuilder: (_, int index) {
           return GestureDetector(
             onTap: () {
+              _onTapVideo(index);
               debugPrint(index.toString());
               setState(() {
                 if(_playArea==false){
@@ -252,6 +270,7 @@ class _VideoInfoState extends State<VideoInfo> {
             },
             child: _buildCard(index),
           );
+
         });
   }
 
@@ -337,4 +356,18 @@ class _VideoInfoState extends State<VideoInfo> {
       ),
     );
   }
+
+  Widget _playView(BuildContext context){
+    final controller = _controller;
+    if(controller!=null&&controller.value.isInitialized){
+      return Container(
+        height: 300,
+        width: 300,
+        child: VideoPlayer(controller),
+      );
+    }else{
+      return Text("Being init");
+    }
+  }
+
 }
